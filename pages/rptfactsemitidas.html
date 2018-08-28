@@ -1,0 +1,153 @@
+<style>
+    .ancho{ width: 100% !important; }
+    .brdbtm{ border-bottom: solid 0.1em lightgrey}
+    .bld{ font-weight: bold; }
+</style>
+<div class="container" ng-controller="rptFacturasEmitidasCtrl">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Reporte de facturas emitidas</div>
+            <div class="panel-body" style="text-align: right">
+                <div class="row" style="text-align: left">
+                    <div class="col-md-3 col-sm-3">
+                        <div class="form-group">
+                            <label for="txtDel">Del:</label>
+                            <input name="txtDel" id="txtDel" type="date" class="form-control" ng-model="params.fdel" placeholder="Del"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="form-group">
+                            <label for="txtAl">Al:</label>
+                            <input name="txtAl" id="txtAl" type="date" class="form-control" ng-model="params.fal" placeholder="Al"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="selEmpresa">Empresa:</label>
+                            <div class="input-group">
+                                <select name="selEmpresa" id="selEmpresa" class="form-control" ng-model="params.idempresa"
+                                        ng-options="obj.id as obj.nomempresa for obj in empresas"
+                                        ng-change="loadProyectos(params.idempresa)">
+                                </select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="params.idempresa = undefined; proyectos = []; params.idproyecto = undefined;"
+                                            ng-disabled="params.idempresa === null || params.idempresa === undefined">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="text-align: left">
+                    <div class="col-md-10 col-sm-10">
+                        <div class="form-group">
+                            <label for="txtCliente">Cliente:</label>
+                            <!--<input name="txtCliente" id="txtCliente" type="text" class="form-control" ng-model="params.cliente" placeholder="Nombre, nombre corto, facturar a..."/>-->
+                            <div angucomplete-alt id="txtCliente"
+                                 placeholder="Buscar cliente..."
+                                 pause="400"
+                                 selected-object="clienteSelected"
+                                 remote-url="php/facturaotros.php/srchcli/{{params.idempresa}}/"
+                                 remote-url-error-callback="errorSearch"
+                                 remote-url-data-field="results"
+                                 title-field="facturara"
+                                 description-field="infocliente"
+                                 input-class="form-control form-control-sm ancho"
+                                 match-class="highlight"
+                                 minlength="1"
+                                 field-required="true"
+                                 input-name="txtCliente"
+                                 input-changed="focusOut"
+                                 override-suggestions="true"
+                                 template-url="/my-custom-template.html"
+                            ></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <div class="form-group">
+                            <label for="selVer">Ver:</label>
+                            <select name="selVer" id="selVer" class="form-control" ng-model="params.tipo">
+                                <option value="1">Todas</option>
+                                <option value="2">Pagadas</option>
+                                <option value="3">No pagadas</option>
+                                <option value="4">Pendientes de emitir</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="text-align: left">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="selProyecto">Proyecto:</label>
+                            <div class="input-group">
+                                <select name="selProyecto" id="selProyecto" class="form-control" ng-model="params.idproyecto"
+                                        ng-options="obj.id as obj.nomproyecto for obj in proyectos"></select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="params.idproyecto = undefined;" ng-disabled="params.idproyecto === null || params.idproyecto === undefined">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="selTipo">Tipo:</label>
+                            <div class="input-group">
+                                <select name="selTipo" id="selTipo" class="form-control" ng-model="params.idtsventa"
+                                        ng-options="obj.id as obj.desctiposervventa for obj in tsventa"></select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="params.idtsventa = undefined;" ng-disabled="params.idtsventa === null || params.idtsventa === undefined || params.idtsventa === ''">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" ng-click="getFactsEmitidas()">
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <object data="{{content}}" type="application/pdf" style="width: 100%; height: 50em"></object>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="/my-custom-template.html">
+    <div class="angucomplete-holder ancho" ng-class="{'angucomplete-dropdown-visible': showDropdown}">
+        <input ng-model="searchStr"
+               ng-disabled="disableInput"
+               type="text"
+               placeholder="{{placeholder}}"
+               ng-focus="onFocusHandler()"
+               class="{{inputClass}}"
+               ng-focus="resetHideResults()"
+               ng-blur="hideResults($event)"
+               autocapitalize="off"
+               autocorrect="off"
+               autocomplete="off"
+               ng-change="inputChangeHandler(searchStr)"/>
+        <div class="angucomplete-dropdown ancho" ng-show="showDropdown">
+            <div class="angucomplete-searching ancho" ng-show="searching" ng-bind="textSearching"></div>
+            <div class="angucomplete-searching ancho" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>
+            <div class="angucomplete-row ancho brdbtm" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{'angucomplete-selected-row': $index == currentIndex}">
+                <div ng-if="imageField" class="angucomplete-image-holder">
+                    <img ng-if="result.image && result.image != ''" ng-src="{{result.image}}" class="angucomplete-image"/>
+                    <div ng-if="!result.image && result.image != ''" class="angucomplete-image-default"></div>
+                </div>
+                <div class="angucomplete-title ancho bld" ng-if="matchClass" ng-bind-html="result.title"></div>
+                <div class="angucomplete-title ancho bld" ng-if="!matchClass">{{ result.title }}</div>
+                <div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description ancho" ng-bind-html="result.description"></div>
+                <div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description ancho">{{result.description}}</div>
+            </div>
+            <div class="angucomplete-row ancho" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
+                <div class="angucomplete-title ancho">Selecci&oacute;n de cliente '{{ searchStr }}'</div>
+            </div>
+        </div>
+    </div>
+</script>
