@@ -4,7 +4,9 @@
 
     rptconciliabcoctrl.controller('rptConciliaBcoCtrl', ['$scope', 'rptConciliaBcoSrvc', 'empresaSrvc', 'authSrvc', 'jsReportSrvc', '$sce', 'bancoSrvc', function($scope, rptConciliaBcoSrvc, empresaSrvc, authSrvc, jsReportSrvc, $sce, bancoSrvc){
 
-        $scope.params = {idbanco: undefined, del: moment().startOf('month').toDate(), al: moment().endOf('month').toDate(), saldobco: 0.00, objBanco: {}};
+        $scope.params = {
+            idbanco: undefined, del: moment().startOf('month').toDate(), al: moment().endOf('month').toDate(), saldobco: 0.00, objBanco: {}, remp: 'winet'
+        };
         $scope.bancos = [];
         $scope.conciliacion = {};
         $scope.content = null;

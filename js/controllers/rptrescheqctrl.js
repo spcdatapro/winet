@@ -4,7 +4,9 @@
 
     rptrescheqctrl.controller('rptResumenChequesCtrl', ['$scope', 'jsReportSrvc', 'monedaSrvc', function($scope, jsReportSrvc, monedaSrvc){
 
-        $scope.params = { fdel: moment().toDate(), fal: moment().toDate(), idmoneda: '1', orden: '1' };
+        $scope.params = {
+            fdel: moment().toDate(), fal: moment().toDate(), idmoneda: '1', orden: '1', remp: 'winet'
+        };
         $scope.monedas = [];
 
         monedaSrvc.lstMonedas().then(function(d){ $scope.monedas = d; });

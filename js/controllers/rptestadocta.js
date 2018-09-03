@@ -6,7 +6,9 @@
 
         $scope.objEmpresa = {};
         $scope.losBancos = [];
-        $scope.params = { idempresa: 0, fDel: moment().startOf('month').toDate(), fAl: moment().endOf('month').toDate(), idbanco: 0, fdelstr: '', falstr:'', resumen: 0 };
+        $scope.params = {
+            idempresa: 0, fDel: moment().startOf('month').toDate(), fAl: moment().endOf('month').toDate(), idbanco: 0, fdelstr: '', falstr:'', resumen: 0, remp: 'winet'
+        };
         $scope.objBanco = [];
         $scope.content = '';
 

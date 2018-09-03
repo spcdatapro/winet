@@ -4,7 +4,7 @@
 
     rptsumarioctrl.controller('rptSumarioCtrl', ['$scope', 'jsReportSrvc', 'monedaSrvc', 'bancoSrvc', '$sce', '$http', '$window', '$q', '$filter', 'Upload', function($scope, jsReportSrvc, monedaSrvc, bancoSrvc, $sce, $http, $window, $q, $filter, Upload){
 
-        $scope.params = { fecha: moment().toDate(), idmoneda: '1', solomov: 1 };
+        $scope.params = { fecha: moment().toDate(), idmoneda: '1', solomov: 1, remp: 'winet' };
         //$scope.params = { fecha: moment('2017-06-14').toDate(), idmoneda: '1', solomov: 1 };
         $scope.monedas = [];
         $scope.content = '';
