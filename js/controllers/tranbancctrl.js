@@ -419,7 +419,7 @@
         $scope.gcprint = function(obj){
             var gadget = new cloudprint.Gadget();
             //var url = "http://52.35.3.1/sayet/php/" + obj.objBanco.formato + ".php?c=" + obj.id;
-            var url = window.location.origin + "/sayet/php/" + obj.objBanco.formato + ".php?c=" + obj.id + "&uid=" + $scope.uid;
+            var url = window.location.origin + "/winet/php/" + obj.objBanco.formato + ".php?c=" + obj.id + "&uid=" + $scope.uid;
             console.log(url);
             gadget.setPrintDocument("url", "C" + obj.numero, url);
             gadget.openPrintDialog();
